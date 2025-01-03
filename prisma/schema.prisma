@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          Role
+  api_key       String?   @unique
+  client        Client[]
+
+  @@map("users")
+}
+
+model Client {
+  id                String            @id @default(cuid())
+  client_id         String?
+  fullName          String
+  email             String?
+  phoneNumber       String
+  transactionAction String
+  transactionCode   String            @unique
+  transactionStatus TransactionStatus
+  declineReason     String?
+  paymentMethodName String
+  amount            Int
+  convertedAmount   Int?
+  company_name      String?
+  callback          String?
+  return_url        String?
+  language          String?
+  imageUrl          String[]
+  createdAt         DateTime          @default(now())
+  userApiKey        String?
+  instaPay          InstaPay?
+  bankTransfer      BankTransfer?
+  fawryPay          FawryPay?
+  User              User?             @relation(fields: [userId], references: [id])
+  userId            String?
+
+  @@map("clients")
+}
+
+model InstaPay {
+  id         String  @id @default(cuid())
+  userCode   String?
+  userNumber String?
+  client     Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId   String  @unique
+
+  @@map("insta_pay")
+}
+
+model FawryPay {
+  id          String @id @default(cuid())
+  phoneNumber String
+  client      Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    String @unique
+
+  @@map("fawry_pay")
+}
+
+model BankTransfer {
+  id            String @id @default(cuid())
+  accountNumber String
+  swiftCode     String
+  bankName      String
+  branchName    String
+  branchCode    String
+  ibanNumber    String
+  client        Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId      String @unique
+
+  @@map("bank_transfer")
+}
+
+model Vodafone {
+  id            String    @id @default(cuid())
+  phoneNumber   String
+  phoneHolder   String
+  initialAmount Int
+  monthlyAmount Int
+  monthlyLimit  Boolean   @default(false)
+  totalAmount   Int
+  reserved      Boolean   @default(false)
+  reservedAt    DateTime?
+  createdAt     DateTime?
+
+  @@map("vodafone")
+}
+
+enum Role {
+  Admin
+  User
+}
+
+enum TransactionStatus {
+  Completed
+  Pending
+  Declined
+}

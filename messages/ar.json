@@ -1,0 +1,85 @@
+{
+  "header": {
+    "login": "تسجيل دخول"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "locale": "{locale, select, ar {Arabic} en {English} other {Unknown}}"
+  },
+  "steps": {
+    "step_1": "الخطوة الأولى",
+    "step_1_content": "بياناتك",
+    "step_2": "الخطوة الثانية",
+    "step_2_content": "إدارة الأموال",
+    "step_3": "الخطوة الثالثة",
+    "step_3_content": "المبلغ",
+    "step_4": "الخطوة الرابعة",
+    "step_4_content": "وسيلة الإيداع",
+    "step_5": "الخطوة الخامسة",
+    "step_5_content": "التأكيد"
+  },
+  "info": {
+    "header": "املأ بياناتك الشخصية",
+    "full_name": "الاسم الكامل",
+    "email": "بريد إلكتروني",
+    "phone_number": "رقم التليفون",
+    "terms": "أوافق على الشروط و الأحكام"
+  },
+  "fund": {
+    "deposit": "إيداع",
+    "withdrawal": "سحب"
+  },
+  "amount": {
+    "enter_amount": "أدخل المبلغ",
+    "content": ": سعر الصرف اليوم هو",
+    "converted_amount": "المبلغ المحول",
+    "currency_name": "جنيه مصري"
+  },
+  "fawryPage": {
+    "enter_phoneNumber": "أدخل رقم الهاتف لتلقي الرمز",
+    "enter_phoneNumber_content": "رقم التليفون"
+  },
+  "bank": {
+    "header": "أدخل بيانات حسابك البنكي",
+    "account_name": "إسم الحساب",
+    "account_number": "ACCOUNT NUMBER",
+    "swift": "SWIFT",
+    "bank": "BANK",
+    "branch_name": "Branch Name",
+    "iban": "IBAN ACCOUNT NUMBER"
+  },
+  "insta": {
+    "user_code": "الرقم السري للمستخدم"
+  },
+  "pagination": {
+    "next": "الخطوة التالية",
+    "back": "الخطوة السابقة",
+    "confirm": "تأكيد"
+  },
+  "login": {
+    "email": "أدخل بريدك الإلكتروني",
+    "password": "أدخل كلمة المرور الخاصة بك",
+    "login_button": "تسجيل الدخول",
+    "no_account": "ليس لديك حساب ؟",
+    "forgot_password": "نسيت كلمة المرور"
+  },
+  "register": {
+    "full_name": "أدخل اسمك الكامل",
+    "email": "أدخل بريدك الإلكتروني",
+    "password": "أدخل كلمة المرور الخاصة بك",
+    "register_button": "قم بالتسجيل",
+    "have_account": "هل لديك حساب ؟",
+    "auth": {
+      "auth_1": "حرفا 8 - 15",
+      "auth_2": "1 أو أكثر من الحروف الصغيرة",
+      "auth_3": "1 أو أكثر من الحروف الكبيرة",
+      "auth_4": "1 أو أكثر من الأرقام",
+      "auth_5": "حرف خاص واحد أو أكثر (#[]()@$&*!?|,.^/+_-)"
+    }
+  },
+  "forgot_password": {
+    "email": "ادخل بريدك الالكتروني",
+    "forgot_password": "نسيت كلمة المرور",
+    "submit": "ارسل"
+  }
+}

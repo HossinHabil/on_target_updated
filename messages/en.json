@@ -1,0 +1,85 @@
+{
+  "header": {
+    "login": "Login"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "locale": "{locale, select, ar {Arabic} en {English} other {Unknown}}"
+  },
+  "steps": {
+    "step_1": "Step 1",
+    "step_1_content": "Your Info",
+    "step_2": "Step 2",
+    "step_2_content": "Manage Funds",
+    "step_3": "Step 3",
+    "step_3_content": "Amount",
+    "step_4": "Step 4",
+    "step_4_content": "Payment Method",
+    "step_5": "Step 5",
+    "step_5_content": "Confirm"
+  },
+  "info": {
+    "header": "Fill in your personal details",
+    "full_name": "Full Name",
+    "email": "Email",
+    "phone_number": "Phone Number",
+    "terms": "Accept terms and conditions"
+  },
+  "fund": {
+    "deposit": "Deposit",
+    "withdrawal": "Withdrawal"
+  },
+  "amount": {
+    "enter_amount": "Enter Amount",
+    "content": "Exchange Rate Today is :",
+    "converted_amount": "Converted Amount",
+    "currency_name": "EGP"
+  },
+  "fawryPage": {
+    "enter_phoneNumber": "Enter the phone number to receive the code",
+    "enter_phoneNumber_content": "Phone Number"
+  },
+  "bank": {
+    "header": "Fill In Your Bank Account Details",
+    "account_name": "Account Name",
+    "account_number": "ACCOUNT NUMBER",
+    "swift": "SWIFT",
+    "bank": "BANK",
+    "branch_name": "Branch Name",
+    "iban": "IBAN ACCOUNT NUMBER"
+  },
+  "insta": {
+    "user_code": "User Code"
+  },
+  "pagination": {
+    "next": "Next Step",
+    "back": "Go Back",
+    "confirm": "Confirm"
+  },
+  "login": {
+    "email": "Enter your email",
+    "password": "Enter your password",
+    "login_button": "Login",
+    "no_account": "Don't have an account ?",
+    "forgot_password": "Forgot Password"
+  },
+  "register": {
+    "full_name": "Enter your full name",
+    "email": "Enter your email",
+    "password": "Enter your password",
+    "register_button": "Register",
+    "have_account": "Already have an account ?",
+    "auth": {
+      "auth_1": "8 - 15 characters",
+      "auth_2": "1 or more lower case letters",
+      "auth_3": "1 or more upper case letters",
+      "auth_4": "1 or more numbers",
+      "auth_5": "1 or more special characters (#[]()@$&*!?|,.^/+_-)"
+    }
+  },
+  "forgot_password": {
+    "email": "Enter your email",
+    "forgot_password": "Forgot Password",
+    "submit": "Submit"
+  }
+}
