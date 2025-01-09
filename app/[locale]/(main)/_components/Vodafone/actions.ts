@@ -1,9 +1,17 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { vodafonePhoneNumber, vodafonePhoneNumberSelect } from "@/lib/types";
+import {
+  VodafoneNumbersDepositProps,
+  VodafoneNumbersWithdrawalProps,
+  vodafonePhoneNumber,
+  vodafonePhoneNumberSelect,
+} from "@/lib/types";
+import crypto from "crypto";
 import { ClientUploadedFileData } from "uploadthing/types";
 import { UTApi } from "uploadthing/server";
+import { TransactionStatus } from "@prisma/client";
+import { getLocale } from "next-intl/server";
 
 const utapi = new UTApi();
 
@@ -218,5 +226,272 @@ export const handleDeleteImage = async (imageUrl: string) => {
   } catch (error) {
     console.error("Error handling uploaded image:", error);
     throw error;
+  }
+};
+
+export const updateVodafoneDeposit = async ({
+  decryptedData,
+  phoneNumbersArray,
+  remainderAmount,
+}: VodafoneNumbersDepositProps) => {
+  try {
+    if (!phoneNumbersArray || phoneNumbersArray.length === 0) {
+      throw new Error("Phone numbers array is required and cannot be empty");
+    }
+
+    const existingClient = await db.client.findUnique({
+      where: {
+        transactionCode: decryptedData.transactionCode,
+      },
+    });
+
+    if (!existingClient) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    const result = await db.$transaction(async (tx) => {
+      const updatedClient = await tx.client.update({
+        where: {
+          transactionCode: decryptedData.transactionCode,
+        },
+        data: {
+          imageUrl: decryptedData.uploadedImage,
+          paymentMethodName: decryptedData.paymentMethodName,
+          transactionStatus: TransactionStatus.Pending,
+        },
+      });
+
+      for (let i = 0; i < phoneNumbersArray.length; i++) {
+        const item = phoneNumbersArray[i];
+        const isLastItem = i === phoneNumbersArray.length - 1;
+        const amountToUse = isLastItem
+          ? Number(remainderAmount.toFixed(0))
+          : item.initialAmount;
+        await tx.vodafone.updateMany({
+          where: {
+            id: item.id,
+          },
+          data: {
+            initialAmount: {
+              decrement: amountToUse,
+            },
+            monthlyAmount: {
+              increment: amountToUse,
+            },
+            totalAmount: {
+              increment: amountToUse,
+            },
+            reserved: false,
+          },
+        });
+      }
+
+      return updatedClient;
+    });
+
+    return {
+      status: 200,
+      message: "Done, Transaction has been submitted successfully",
+      return_url: existingClient.return_url,
+    };
+  } catch (error) {
+    console.error("Error updating Vodafone deposit:", error);
+    return {
+      status: 500,
+      message: "Failed to update Vodafone deposit",
+      error: error,
+    };
+  }
+};
+
+export const createVodafoneDeposit = async ({
+  decryptedData,
+  phoneNumbersArray,
+  remainderAmount,
+}: VodafoneNumbersDepositProps) => {
+  try {
+    if (!decryptedData) {
+      throw new Error("Decrypted data is required");
+    }
+
+    if (!phoneNumbersArray || phoneNumbersArray.length === 0) {
+      throw new Error("Phone numbers array is required and cannot be empty");
+    }
+
+    const locale = await getLocale();
+
+    const transactionCode = crypto.randomInt(100_000, 1_000_000).toString();
+
+    const newClient = await db.$transaction(async (tx) => {
+      const createdClient = await tx.client.create({
+        data: {
+          fullName: decryptedData.fullName,
+          email: decryptedData.email,
+          phoneNumber: decryptedData.phoneNumber,
+          amount: Number(decryptedData.amount),
+          paymentMethodName: decryptedData.paymentMethodName,
+          transactionAction: decryptedData.transactionAction,
+          transactionCode,
+          imageUrl: decryptedData.uploadedImage,
+          transactionStatus: TransactionStatus.Pending,
+          language: locale,
+        },
+      });
+
+      for (let i = 0; i < phoneNumbersArray.length; i++) {
+        const item = phoneNumbersArray[i];
+        const isLastItem = i === phoneNumbersArray.length - 1;
+        const amountToUse = isLastItem
+          ? Number(remainderAmount.toFixed(0))
+          : item.initialAmount;
+        await tx.vodafone.updateMany({
+          where: {
+            id: item.id,
+          },
+          data: {
+            initialAmount: {
+              decrement: amountToUse,
+            },
+            monthlyAmount: {
+              increment: amountToUse,
+            },
+            totalAmount: {
+              increment: amountToUse,
+            },
+            reserved: false,
+          },
+        });
+      }
+
+      return createdClient;
+    });
+
+    return {
+      status: 200,
+      message: "Done, Transaction has been submitted successfully",
+    };
+  } catch (error) {
+    console.error("Error creating Vodafone deposit:", error);
+
+    return {
+      status: 500,
+      message: "Failed to create Vodafone deposit",
+      error: error,
+    };
+  }
+};
+
+export const updateVodafoneWithdrawal = async ({
+  decryptedData,
+  values,
+}: VodafoneNumbersWithdrawalProps) => {
+  try {
+    const existingClient = await db.client.findUnique({
+      where: {
+        transactionCode: decryptedData.transactionCode,
+      },
+    });
+
+    if (!existingClient) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    const transferAmounts = values.transfers.map((transfer) => ({
+      phoneNumber: transfer.phoneNumber,
+      amount: Number(transfer.amount),
+    }));
+
+    const totalAmount = transferAmounts.reduce(
+      (sum, transfer) => sum + transfer.amount,
+      0
+    );
+
+    const locale = await getLocale();
+
+    const clientData = {
+      amount: totalAmount,
+      paymentMethodName: decryptedData.paymentMethodName,
+      transactionAction: decryptedData.transactionAction,
+      transactionCode: decryptedData.transactionCode as string,
+      transactionStatus: TransactionStatus.Pending,
+      language: locale,
+      VodafoneWithdrawal: { create: transferAmounts },
+    };
+
+    await db.client.update({
+      where: {
+        transactionCode: decryptedData.transactionCode,
+      },
+      include: {
+        VodafoneWithdrawal: true,
+      },
+      data: clientData,
+    });
+
+    return {
+      status: 200,
+      message: "Done, Transaction has been submitted successfully",
+      return_url: existingClient.return_url,
+    };
+  } catch (error) {
+    console.error("Error updating Vodafone withdrawal:", error);
+    return {
+      status: 500,
+      message: "Failed to update Vodafone withdrawal",
+      error: error,
+    };
+  }
+};
+
+export const createVodafoneWithdrawal = async ({
+  decryptedData,
+  values,
+}: VodafoneNumbersWithdrawalProps) => {
+  try {
+    const locale = await getLocale();
+
+    const transactionCode = crypto.randomInt(100_000, 1_000_000).toString();
+
+    const newClient = await db.$transaction(async (prisma) => {
+      const clientData = {
+        fullName: decryptedData?.fullName,
+        email: decryptedData.email,
+        phoneNumber: decryptedData.phoneNumber,
+        amount: Number(decryptedData.amount),
+        paymentMethodName: decryptedData.paymentMethodName,
+        transactionAction: decryptedData.transactionAction,
+        transactionStatus: TransactionStatus.Pending,
+        transactionCode,
+        imageUrl: [],
+        language: locale,
+        VodafoneWithdrawal: {
+          create: values.transfers.map((transfer) => ({
+            phoneNumber: transfer.phoneNumber,
+            amount: Number(transfer.amount),
+          })),
+        },
+      };
+
+      return prisma.client.create({
+        include: { VodafoneWithdrawal: true },
+        data: clientData,
+      });
+    });
+
+    return {
+      status: 200,
+      message: "Done, Transaction has been submitted successfully",
+    };
+  } catch (error) {
+    console.error("Error creating Vodafone withdrawal:", error);
+    return {
+      status: 500,
+      message: "Failed to create Vodafone withdrawal",
+      error: error,
+    };
   }
 };

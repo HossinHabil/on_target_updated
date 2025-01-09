@@ -28,7 +28,7 @@ export default async function StepsPage({ params }: StepsPageProps) {
   return (
     <div className="w-full lg:h-[calc(100vh-5rem)] flex flex-col lg:flex-row overflow-y-auto">
       <Sidebar pageParam={pageParam} />
-      <main className="max-w-7xl mx-auto w-full min-w-0 flex flex-col items-center py-20 px-4">
+      <main className="max-w-7xl mx-auto w-full min-w-0 flex flex-col items-center lg:pl-72 py-20 px-4">
         {handleStepsForm(parseInt(pageParam))}
       </main>
     </div>

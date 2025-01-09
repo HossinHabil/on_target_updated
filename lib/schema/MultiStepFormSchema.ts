@@ -25,3 +25,16 @@ export const FormSchemaStepThree = z.object({
 export const FormSchemaStepFour = z.object({
   paymentMethodName: z.string(),
 });
+export const BankTransferWithdrawalSchema = z.object({
+  accountNumber: z.string().min(1, "Required"),
+  accountHolder: z.string().min(1, "Required"),
+  bankName: z.string().min(1, "Required"),
+  swiftCode: z.string().min(1, "Required"),
+  branchName: z.string().min(1, "Required"),
+  branchCode: z.string().min(1, "Required"),
+  ibanAccountNumber: z.string().min(1, "Required"),
+});
+
+export type BankTransferWithdrawalType = z.infer<
+  typeof BankTransferWithdrawalSchema
+>;

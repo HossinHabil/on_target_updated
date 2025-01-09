@@ -42,11 +42,12 @@
   "bank": {
     "header": "أدخل بيانات حسابك البنكي",
     "account_name": "إسم الحساب",
-    "account_number": "ACCOUNT NUMBER",
+    "account_number": "أدخل رقم الحساب",
     "swift": "SWIFT",
-    "bank": "BANK",
-    "branch_name": "Branch Name",
-    "iban": "IBAN ACCOUNT NUMBER"
+    "bank_name": "اسم البنك",
+    "branch_name": "اسم الفرع",
+    "branch_code": "كود الفرع",
+    "iban": "IBAN"
   },
   "insta": {
     "user_code": "الرقم السري للمستخدم"

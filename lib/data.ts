@@ -1,3 +1,5 @@
+import { Settings, Home } from "lucide-react";
+
 export const titleData = {
   title: [
     "Personal info",
@@ -55,24 +57,18 @@ export const paymentsMethods = [
   },
 ];
 
-export const dashboardSidebar = [
+export const MenuBarLinks = [
   {
     id: 1,
     name: "Dashboard",
-    link: "dashboard",
-    image: "/website/dashboard/layout-dashboard.svg",
+    href: "/dashboard",
+    icon: Home,
   },
   {
     id: 2,
     name: "Settings",
-    link: "dashboard/settings",
-    image: "/website/dashboard/settings.svg",
-  },
-  {
-    id: 3,
-    name: "Admin",
-    link: "dashboard/admin",
-    image: "/website/dashboard/shield-check.svg",
+    href: "/dashboard/settings",
+    icon: Settings,
   },
 ];
 

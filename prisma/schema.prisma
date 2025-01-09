@@ -24,42 +24,54 @@ model User {
 }
 
 model Client {
-  id                String            @id @default(cuid())
-  client_id         String?
-  fullName          String
-  email             String?
-  phoneNumber       String
-  transactionAction String
-  transactionCode   String            @unique
-  transactionStatus TransactionStatus
-  declineReason     String?
-  paymentMethodName String
-  amount            Int
-  convertedAmount   Int?
-  company_name      String?
-  callback          String?
-  return_url        String?
-  language          String?
-  imageUrl          String[]
-  createdAt         DateTime          @default(now())
-  userApiKey        String?
-  instaPay          InstaPay?
-  bankTransfer      BankTransfer?
-  fawryPay          FawryPay?
-  User              User?             @relation(fields: [userId], references: [id])
-  userId            String?
+  id                     String                  @id @default(cuid())
+  client_id              String?
+  fullName               String
+  email                  String?
+  phoneNumber            String
+  transactionAction      String
+  transactionCode        String                  @unique
+  transactionStatus      TransactionStatus
+  declineReason          String?
+  paymentMethodName      String
+  amount                 Int
+  company_name           String?
+  callback               String?
+  return_url             String?
+  language               String                  @default("en")
+  imageUrl               String[]
+  createdAt              DateTime                @default(now())
+  bankTransfer           BankTransfer?
+  BankTransferWithdrawal BankTransferWithdrawal?
+  fawryPay               FawryPay?
+  VodafoneWithdrawal     VodafoneWithdrawal[]
+  InstaPayWithdrawal     InstaPayWithdrawal[]
+  InstaPay               InstaPay?
+  User                   User?                   @relation(fields: [userId], references: [id])
+  userId                 String?
 
   @@map("clients")
 }
 
 model InstaPay {
+  id              String  @id @default(cuid())
+  qrCodeImage     String?
+  userNumberImage String?
+  client          Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId        String  @unique
+
+  @@map("insta_pay")
+}
+
+model InstaPayWithdrawal {
   id         String  @id @default(cuid())
   userCode   String?
   userNumber String?
+  amount     String
   client     Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  clientId   String  @unique
+  clientId   String
 
-  @@map("insta_pay")
+  @@map("insta_pay_withdrawal")
 }
 
 model FawryPay {
@@ -72,7 +84,16 @@ model FawryPay {
 }
 
 model BankTransfer {
+  id       String @id @default(cuid())
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId String @unique
+
+  @@map("bank_transfer")
+}
+
+model BankTransferWithdrawal {
   id            String @id @default(cuid())
+  accountHolder String
   accountNumber String
   swiftCode     String
   bankName      String
@@ -82,7 +103,7 @@ model BankTransfer {
   client        Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId      String @unique
 
-  @@map("bank_transfer")
+  @@map("bank_transfer_withdrawal")
 }
 
 model Vodafone {
@@ -98,6 +119,16 @@ model Vodafone {
   createdAt     DateTime?
 
   @@map("vodafone")
+}
+
+model VodafoneWithdrawal {
+  id          String @id @default(cuid())
+  phoneNumber String
+  amount      Int
+  client      Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    String
+
+  @@map("vodafone_withdrawal")
 }
 
 enum Role {

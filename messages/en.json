@@ -41,12 +41,13 @@
   },
   "bank": {
     "header": "Fill In Your Bank Account Details",
-    "account_name": "Account Name",
-    "account_number": "ACCOUNT NUMBER",
-    "swift": "SWIFT",
-    "bank": "BANK",
+    "account_holder": "Account Holder",
+    "account_number": "Account Number",
+    "bank_name": "Bank Name",
     "branch_name": "Branch Name",
-    "iban": "IBAN ACCOUNT NUMBER"
+    "branch_code": "Branch Code",
+    "swift": "SWIFT",
+    "iban": "IBAN"
   },
   "insta": {
     "user_code": "User Code"

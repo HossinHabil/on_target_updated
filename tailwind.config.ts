@@ -14,6 +14,9 @@ const config = {
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        purple: "#807ae7",
+        blush: "#F9818E",
+        indigo: "#483eff",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

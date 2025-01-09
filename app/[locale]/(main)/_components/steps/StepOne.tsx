@@ -116,8 +116,9 @@ export default function StepOne() {
                 <FormItem className="text-left">
                   <FormControl>
                     <PhoneInput
-                      country={"cy"}
-                      enableSearch
+                      country={"eg"}
+                      disableDropdown
+                      onlyCountries={["eg"]}
                       value={field.value}
                       onChange={field.onChange}
                       inputClass={`border-input p-6 placeholder:text-muted-foreground text-primary !w-full !rounded-2xl shadow-[rgba(0,_0,_0,_0.15)_0px_2px_8px] ${

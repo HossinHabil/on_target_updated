@@ -37,7 +37,7 @@ export default function Sidebar({ pageParam }: SidebarProps) {
     },
   ];
   return (
-    <header className="flex h-24 lg:h-full lg:max-w-[15rem] w-full items-start justify-center bg-sidebarMobile bg-cover bg-no-repeat p-6 lg:justify-start lg:rounded-md lg:bg-sidebarDesktop lg:bg-cover lg:bg-center lg:pt-10">
+    <header className="flex sticky lg:fixed h-24 lg:h-full lg:max-w-[15rem] w-full items-start justify-center bg-sidebarMobile bg-cover bg-no-repeat p-6 lg:justify-start lg:rounded-md lg:bg-sidebarDesktop lg:bg-cover lg:bg-center lg:pt-10">
       <ul className="flex gap-4 text-white lg:flex-col lg:gap-8">
         {stepData.map((info, index) => {
           return <StepItem key={index} info={info} pageParam={pageParam} />;

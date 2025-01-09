@@ -1,20 +1,28 @@
 import { env } from "@/env";
-import { LocalStorageData, vodafonePhoneNumber } from "@/lib/types";
+import {
+  LocalStorageData,
+  VodafoneNumbersDepositProps,
+  VodafoneNumbersWithdrawalProps,
+  vodafonePhoneNumber,
+} from "@/lib/types";
 import { decryptData, encryptData } from "@/lib/utils";
+import { QueryKey, useMutation, useQuery } from "@tanstack/react-query";
 import {
-  MutationKey,
-  QueryKey,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import {
+  createVodafoneDeposit,
+  createVodafoneWithdrawal,
   fetchPhoneNumbers,
   handleDeleteImage,
   handleUploadImage,
   updateReservedVodafoneNumbers,
+  updateVodafoneDeposit,
+  updateVodafoneWithdrawal,
 } from "./actions";
 import { useToast } from "@/hooks/use-toast";
+
+interface useDeleteImageProps {
+  localStorageData: string;
+  setLocalStorageData: (data: string) => void;
+}
 
 export function useFetchPhoneNumbers(localStorageData: string) {
   const queryKey: QueryKey = ["fetchPhoneNumbers"];
@@ -39,34 +47,39 @@ export function useFetchPhoneNumbers(localStorageData: string) {
 }
 
 export function useUpdateReservedNumbers() {
-  const mutationKey: MutationKey = ["updateReservedNumbers"];
-
   return useMutation({
-    mutationKey,
     mutationFn: async (values: vodafonePhoneNumber[]) =>
       updateReservedVodafoneNumbers(values),
   });
 }
 
-const mutationKey: MutationKey = ["uploadImage"];
-
-export function useUploadImage() {
+export function useUploadImage({
+  localStorageData,
+  setLocalStorageData,
+}: useDeleteImageProps) {
   const { toast } = useToast();
 
   return useMutation({
-    mutationKey,
     mutationFn: handleUploadImage,
     onSuccess: (data) => {
+      const decryptedData: LocalStorageData = decryptData(
+        localStorageData,
+        env.NEXT_PUBLIC_CRYPTO_SECRET_KEY
+      );
+      const updatedLocalStorageData = {
+        ...decryptedData,
+        uploadedImage: [...(decryptedData.uploadedImage || []), data],
+      };
+      const encryptedData = encryptData(
+        updatedLocalStorageData,
+        env.NEXT_PUBLIC_CRYPTO_SECRET_KEY
+      );
+      setLocalStorageData(encryptedData);
       toast({
         title: "Image uploaded successfully",
       });
     },
   });
-}
-
-interface useDeleteImageProps {
-  localStorageData: string;
-  setLocalStorageData: (data: string) => void;
 }
 
 export function useDeleteImage({
@@ -99,6 +112,80 @@ export function useDeleteImage({
       }
       toast({
         title: "Image deleted successfully",
+      });
+    },
+  });
+}
+
+export function useUpdateVodafoneNumbersDeposit() {
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: ({
+      decryptedData,
+      phoneNumbersArray,
+      remainderAmount,
+    }: VodafoneNumbersDepositProps) =>
+      updateVodafoneDeposit({
+        decryptedData,
+        phoneNumbersArray,
+        remainderAmount,
+      }),
+    onSuccess: (data) => {
+      toast({
+        title: data.message,
+      });
+    },
+  });
+}
+
+export function useCreateVodafoneNumbersDeposit() {
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: ({
+      decryptedData,
+      phoneNumbersArray,
+      remainderAmount,
+    }: VodafoneNumbersDepositProps) =>
+      createVodafoneDeposit({
+        decryptedData,
+        phoneNumbersArray,
+        remainderAmount,
+      }),
+    onSuccess: (data) => {
+      toast({
+        title: data.message,
+      });
+    },
+  });
+}
+
+export function useUpdateVodafoneNumbersWithdrawal() {
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: ({ decryptedData, values }: VodafoneNumbersWithdrawalProps) =>
+      updateVodafoneWithdrawal({
+        decryptedData,
+        values,
+      }),
+    onSuccess: (data) => {
+      toast({
+        title: data.message,
+      });
+    },
+  });
+}
+
+export function useCreateVodafoneNumbersWithdrawal() {
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: ({ decryptedData, values }: VodafoneNumbersWithdrawalProps) =>
+      createVodafoneWithdrawal({
+        decryptedData,
+        values,
+      }),
+    onSuccess: (data) => {
+      toast({
+        title: data.message,
       });
     },
   });

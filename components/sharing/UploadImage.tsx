@@ -14,7 +14,7 @@ import { ImagePopUp } from "./ImagePopUp";
 import LoadingButton from "./LoadingButton";
 import { useLocalStorage } from "usehooks-ts";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const UploadImage = () => {
   const param = useSearchParams();
@@ -24,22 +24,38 @@ export const UploadImage = () => {
     ""
   );
   const { toast } = useToast();
-  const [image, setImage] = useState<string | null>();
 
-  const { mutate: uploadImage, data } = useUploadImage();
-  const { mutate: deleteImage, isPending: isDeleting } = useDeleteImage({
+  const { mutate: uploadImage, data } = useUploadImage({
     localStorageData,
     setLocalStorageData,
   });
+  const useDeleteImageMutation = useDeleteImage({
+    localStorageData,
+    setLocalStorageData,
+  });
+  const [image, setImage] = useState<string | undefined>(data);
+
+  useEffect(() => {
+    if (data) {
+      setImage(data);
+    }
+  }, [data]);
 
   return (
     <>
-      {data ? (
+      {image ? (
         <div className="flex flex-col gap-4">
-          <LoadingButton onClick={() => deleteImage(data)} loading={isDeleting}>
+          <LoadingButton
+            onClick={() =>
+              useDeleteImageMutation.mutate(image, {
+                onSuccess: () => setImage(""),
+              })
+            }
+            loading={useDeleteImageMutation.isPending}
+          >
             Delete
           </LoadingButton>
-          {data && <ImagePopUp item={data} title="View Uploaded Image" />}
+          <ImagePopUp item={image} title="View Uploaded Image" />
         </div>
       ) : (
         <UploadButton
