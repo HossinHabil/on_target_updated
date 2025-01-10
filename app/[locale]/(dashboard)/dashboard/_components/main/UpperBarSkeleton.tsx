@@ -3,8 +3,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function UpperBarSkeleton() {
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-10">
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto my-8 w-full">
+    <div className="w-full space-y-10">
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 my-8 w-full">
         <UpperBarItemSkeleton />
         <UpperBarItemSkeleton />
       </section>

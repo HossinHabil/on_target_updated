@@ -70,7 +70,6 @@ export const updateUserRole = async ({
       return {
         status: 401,
         message: "Not Authorized",
-        data: null,
       };
     }
 
@@ -78,7 +77,6 @@ export const updateUserRole = async ({
       return {
         status: 403,
         message: "Not Authorized",
-        data: null,
       };
     }
 
@@ -90,14 +88,134 @@ export const updateUserRole = async ({
         role,
       },
     });
+
+    return {
+      status: 200,
+      message: "Role updated successfully"
+    }
   } catch (error) {
     return {
       status: 500,
       message: "Internal Server Error",
-      error,
     };
   }
 };
+
+export const deleteClient = async ({id}: {id: string}) => {
+  try {
+
+    const session = await auth();
+
+    if (!session || !session.user) {
+      return {
+        status: 401,
+        message: "Not Authorized",
+      };
+    }
+
+    if (session.user.role !== "Admin") {
+      return {
+        status: 403,
+        message: "Not Authorized",
+      };
+    }
+
+    await db.client.delete({
+      where: {
+        id
+      }
+    });
+
+    return {
+      status: 200,
+      message: "Client was deleted successfully"
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      message: "Internal Server Error",
+    }
+  }
+}
+
+export const declineClient = async ({id, declineReason}: {id: string, declineReason: string}) => {
+  try {
+    const session = await auth();
+
+    if (!session || !session.user) {
+      return {
+        status: 401,
+        message: "Not Authorized",
+      };
+    }
+
+    if (session.user.role !== "Admin") {
+      return {
+        status: 403,
+        message: "Not Authorized",
+      };
+    }
+
+    await db.client.update({
+      where: {
+        id,
+      },
+      data: {
+        transactionStatus: "Declined",
+        declineReason,
+      },
+    });
+
+    return {
+      status: 200,
+      message: "Transaction status has been updated successfully"
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      message: "Internal Server Error",
+    }
+  }
+}
+
+export const approveClient = async ({id,}: {id: string}) => {
+  try {
+    const session = await auth();
+
+    if (!session || !session.user) {
+      return {
+        status: 401,
+        message: "Not Authorized",
+      };
+    }
+
+    if (session.user.role !== "Admin") {
+      return {
+        status: 403,
+        message: "Not Authorized",
+      };
+    }
+
+    await db.client.update({
+      where: {
+        id,
+      },
+      data: {
+        transactionStatus: "Completed",
+      }
+    });
+
+    return {
+      status: 200,
+      message: "Transaction status has been updated successfully"
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      message: "Internal Server Error",
+    }
+  }
+}
 
 export const fetchClients = async ({}) => {
   try {
@@ -151,3 +269,40 @@ export const fetchClients = async ({}) => {
     };
   }
 };
+
+export const deleteUser = async ({id}: {id: string}) => {
+  try {
+
+    const session = await auth();
+
+    if (!session || !session.user) {
+      return {
+        status: 401,
+        message: "Not Authorized",
+      };
+    }
+
+    if (session.user.role !== "Admin") {
+      return {
+        status: 403,
+        message: "Not Authorized",
+      };
+    }
+
+    await db.user.delete({
+      where: {
+        id
+      }
+    });
+
+    return {
+      status: 200,
+      message: "User was deleted successfully"
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      message: "Internal Server Error",
+    }
+  }
+}

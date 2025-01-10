@@ -13,7 +13,7 @@ export default function UpperBar({ clientList }: UpperBarProps) {
   );
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto my-8 w-full">
+    <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 my-8 w-full">
       <div className="flex gap-4 bg-white px-8 py-4 rounded-lg">
         <div className="bg-website_primary_color_bg p-4 rounded-full">
           <Image src={usersRound} alt="Icon" width={50} height={50} />

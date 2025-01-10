@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Users from "./_components/Users";
-import Clients from "./_components/Clients";
+import Clients from "./_components/Clients/Clients";
+import Users from "./_components/Users/Users";
+import Vodafone from "./_components/PhoneNumbers/Vodafone";
 
 export default async function Admin() {
   const session = await auth();
@@ -11,7 +12,7 @@ export default async function Admin() {
     return notFound();
   }
   return (
-    <div className="w-full max-w-7xl mx-auto p-4">
+    <div className="w-full md:w-11/12 mx-auto p-4">
       <Tabs
         defaultValue="users"
         className="w-full h-full flex flex-col items-center overflow-auto bg-card p-8 rounded-lg"
@@ -27,6 +28,9 @@ export default async function Admin() {
         </TabsContent>
         <TabsContent value="clients" className="w-full">
           <Clients />
+        </TabsContent>
+        <TabsContent value="phone_numbers" className="w-full">
+          <Vodafone />
         </TabsContent>
       </Tabs>
     </div>

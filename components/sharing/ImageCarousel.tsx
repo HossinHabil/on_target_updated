@@ -1,7 +1,12 @@
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -10,6 +15,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export const ImageCarousel = ({
   items,
@@ -23,7 +29,10 @@ export const ImageCarousel = ({
       <DialogTrigger asChild>
         <Button variant="outline">{title}</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[40rem] w-full">
+      <DialogContent className="max-w-[40rem] w-full" aria-describedby={undefined}>
+        <VisuallyHidden>
+          <DialogTitle>{title}</DialogTitle>
+        </VisuallyHidden>
         <Carousel className="w-full">
           <CarouselContent>
             {items.map((item, index) => (

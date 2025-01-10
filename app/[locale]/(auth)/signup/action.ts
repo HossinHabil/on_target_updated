@@ -21,13 +21,13 @@ export const signUp = async (
 
     const { email, username, password } = validatedFields.data;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const existingEmail = await getUserByEmail(email);
 
     if (existingEmail) {
       return { error: "Email already exists!" };
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await db.user.create({
       data: {

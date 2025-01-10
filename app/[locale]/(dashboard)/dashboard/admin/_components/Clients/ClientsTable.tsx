@@ -16,28 +16,18 @@ import {
 import {
   ArrowUpDown,
   ChevronDown,
-  MoreHorizontal,
   Download,
   Upload,
   Phone,
   CircleDollarSign,
   CircleHelp,
-  Binary,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -54,17 +44,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import {
-//   approveClient,
-//   declineClient,
-//   deleteClient,
-// } from "@/actions/dashboardClient";
-// import { ImageCarousel } from "./ImageCarousel";
-// import { exportToExcel } from "@/lib/utils";
-// import { DateRangePicker } from "./FilterDate";
-import { declineReasons } from "@/lib/data";
 import { ClientTablePropsWithRelations } from "@/lib/types";
-// import { DateRangePicker } from "../../_components/DateRangePicker";
+import ClientDropdownCell from "./ClientDropdownCell";
+import { exportToExcel } from "@/lib/utils";
+import { DateRangePicker } from "../DateRangePicker";
 
 export const columns: ColumnDef<ClientTablePropsWithRelations>[] = [
   {
@@ -261,68 +244,8 @@ export const columns: ColumnDef<ClientTablePropsWithRelations>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const item = row.original;
-      const approveHandler = async (id: string) => {
-        // await approveClient(id);
-      };
-      const declineHandler = async (id: string, declineReason: string) => {
-        // await declineClient(id, declineReason);
-      };
-      const deleteHandler = async (id: string) => {
-        // await deleteClient(id);
-      };
-      const filteredDeclineReasons = declineReasons.filter(
-        (reason) =>
-          reason.service.toLowerCase() === item.paymentMethodName.toLowerCase()
-      );
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => approveHandler(item.id)}
-              className="cursor-pointer"
-            >
-              Approve
-            </DropdownMenuItem>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Decline</DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent>
-                  {filteredDeclineReasons.length
-                    ? filteredDeclineReasons.map((reason) => (
-                        <DropdownMenuItem
-                          onClick={() => declineHandler(item.id, reason.reason)}
-                          className="cursor-pointer"
-                          key={reason.id}
-                        >
-                          {reason.reason}
-                        </DropdownMenuItem>
-                      ))
-                    : "No Decline Reasons Found"}
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-            <DropdownMenuItem
-              onClick={() => deleteHandler(item.id)}
-              className="cursor-pointer"
-            >
-              Delete
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {/* {item.imageUrl.length > 0 && (
-              <ImageCarousel
-                items={item.imageUrl}
-                title="View Uploaded Images"
-              />
-            )} */}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <ClientDropdownCell item={item}/>
       );
     },
   },
@@ -361,13 +284,13 @@ export function ClientsTable({
 
   const totalWithdrawalAmount = React.useMemo(() => {
     return filteredClientData
-      .filter((item) => item.transactionAction === "withdrawal")
+      .filter((item) => item.transactionAction.toLowerCase() === "withdrawal")
       .reduce((total, item) => total + (item.amount || 0), 0);
   }, [filteredClientData]);
 
   const totalDepositAmount = React.useMemo(() => {
     return filteredClientData
-      .filter((item) => item.transactionAction === "deposit")
+      .filter((item) => item.transactionAction.toLowerCase() === "deposit")
       .reduce((total, item) => total + (item.amount || 0), 0);
   }, [filteredClientData]);
 
@@ -403,7 +326,7 @@ export function ClientsTable({
             onChange={(event) => table.setGlobalFilter(event.target.value)}
             className="w-full"
           />
-          {/* <DateRangePicker setRangeObject={setRangeObject} /> */}
+          <DateRangePicker setRangeObject={setRangeObject} />
         </div>
         <div className="grid grid-cols-2 xl:grid-cols-4 w-full items-center gap-2 lg:gap-8">
           <DropdownMenu>
@@ -435,19 +358,22 @@ export function ClientsTable({
           <Button
             variant="outline"
             className="ml-auto w-full"
-            // onClick={() => exportToExcel(table.options.data, "clientData.xlsx")}
+            onClick={() => exportToExcel(table.options.data, "clientData.xlsx")}
+            title="Export"
           >
             Export
           </Button>
           <Button
             variant="outline"
             className="ml-auto w-full flex items-center gap-2"
+            title="Total Withdrawal Amount"
           >
             <Upload size={15} /> {totalWithdrawalAmount} EGP
           </Button>
           <Button
             variant="outline"
             className="ml-auto w-full flex items-center gap-2"
+            title="Total Deposit Amount"
           >
             <Download size={15} /> {totalDepositAmount} EGP
           </Button>

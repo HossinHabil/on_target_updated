@@ -7,15 +7,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
 import { UsersTableProps } from "@/lib/types";
 import { Role } from "@prisma/client";
 import { useUpdateUserRole } from "../mutations";
 
 const RoleSwitcher = ({ item }: { item: UsersTableProps }) => {
   const { id, role } = item;
-  const { data, mutate } = useUpdateUserRole();
-  const { toast } = useToast();
+  const { mutate } = useUpdateUserRole();
 
   const handleSelectChange = (role: Role) => {
     mutate({

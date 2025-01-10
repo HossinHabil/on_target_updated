@@ -17,7 +17,7 @@ export const getClientList = async () => {
 
     const clientList = await db.client.findMany({
       where: {
-        userId: session.id,
+        userId: session.user.id,
       },
     });
 

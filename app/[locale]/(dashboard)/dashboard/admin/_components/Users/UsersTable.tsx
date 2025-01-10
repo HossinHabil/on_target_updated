@@ -16,6 +16,7 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -31,16 +32,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ImageCarousel } from "@/components/sharing/ImageCarousel";
-import { Client } from "@prisma/client";
+// import { deleteUserFun, handleRoleFun } from "@/actions/dashboard/updateData";
+import { UsersTableProps } from "@/lib/types";
+import RoleSwitcher from "../RoleSwitcher";
+import UserDropdownCell from "./UserDropdownCell";
 
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<UsersTableProps>[] = [
   {
-    accessorKey: "fullName",
-    header: "Name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("fullName")}</div>
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
     ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "email",
@@ -58,63 +81,11 @@ export const columns: ColumnDef<Client>[] = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
-    accessorKey: "phoneNumber",
-    header: "Phone Number",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("phoneNumber")}</div>
-    ),
-  },
-  {
-    accessorKey: "transactionCode",
-    header: "Transaction Code",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("transactionCode")}</div>
-    ),
-  },
-  {
-    accessorKey: "transactionAction",
-    header: "Transaction Action",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("transactionAction")}</div>
-    ),
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("amount")}</div>
-    ),
-  },
-  {
-    accessorKey: "paymentMethodName",
-    header: "Payment Method",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.getValue("paymentMethodName") || "Not Selected"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "transactionStatus",
-    header: "Transaction Status",
+    accessorKey: "role",
+    header: "Role",
     cell: ({ row }) => {
-      const switchBg = () => {
-        switch (row.getValue("transactionStatus")) {
-          case "Pending":
-            return "bg-blue-200";
-          case "Completed":
-            return "bg-green-200";
-          case "Declined":
-            return "bg-red-200";
-        }
-      };
-      return (
-        <div
-          className={`capitalize p-1 w-24 text-center rounded-md ${switchBg()}`}
-        >
-          {row.getValue("transactionStatus")}
-        </div>
-      );
+      const item = row.original;
+      return <RoleSwitcher item={item} />;
     },
   },
   {
@@ -122,37 +93,17 @@ export const columns: ColumnDef<Client>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const item = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {item.imageUrl.length > 0 ? (
-              <ImageCarousel
-                items={item.imageUrl}
-                title="View Uploaded Images"
-              />
-            ) : (
-              <p className="p-2 rounded-lg">No images uploaded</p>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <UserDropdownCell item={item}/>
     },
   },
 ];
 
-export default function ClientTableInfo({
-  clientList,
+export default function UsersTable({
+  usersList,
 }: {
-  clientList: Client[];
+  usersList: UsersTableProps[];
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState("");
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -161,7 +112,7 @@ export default function ClientTableInfo({
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data: clientList,
+    data: usersList,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -171,24 +122,24 @@ export default function ClientTableInfo({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    onGlobalFilterChange: setGlobalFilter,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-      globalFilter,
     },
   });
 
   return (
-    <div className="w-full bg-white py-4 px-4 lg:px-6">
+    <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter all columns..."
-          value={globalFilter ?? ""}
-          onChange={(event) => table.setGlobalFilter(event.target.value)}
-          className="max-w-72"
+          placeholder="Filter emails..."
+          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("email")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

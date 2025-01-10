@@ -18,19 +18,7 @@ export const clientData = async () => {
     const clientList = await db.client.findMany({
       where: {
         userId: session.user.id,
-      },
-      select: {
-        fullName: true,
-        email: true,
-        phoneNumber: true,
-        transactionCode: true,
-        paymentMethodName: true,
-        transactionAction: true,
-        amount: true,
-        transactionStatus: true,
-        imageUrl: true,
-        id: true,
-      },
+      }
     });
 
     if (!clientList.length) {

@@ -1,7 +1,7 @@
 "use client";
 
 import TableSkeleton from "@/components/sharing/skeleton/TableSkeleton";
-import { useFetchUsers } from "../mutations";
+import { useFetchUsers } from "../../mutations";
 import UsersTable from "./UsersTable";
 
 export default function Users() {

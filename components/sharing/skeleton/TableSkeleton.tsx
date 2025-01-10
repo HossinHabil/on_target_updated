@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TableSkeleton() {
   return (
-    <div className="w-full max-w-7xl mx-auto animate-pulse bg-card my-8 p-4">
+    <div className="w-full animate-pulse bg-card my-8 p-4">
       <div className="flex justify-between items-center mb-4">
         <Skeleton className="h-6 w-48 rounded" />
         <Skeleton className="h-8 w-24 rounded" />

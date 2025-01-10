@@ -1,5 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { BankTransferWithdrawalType } from "./schema/MultiStepFormSchema";
+import { AddNewVodafoneNumber } from "./schema/Dashboard";
+import { z } from "zod";
 
 export interface LocalStorageData {
   fullName: string;
@@ -16,6 +18,14 @@ export interface LocalStorageData {
 export type vodafonePhoneNumber = Prisma.VodafoneGetPayload<{
   select: { id: true; phoneNumber: true; initialAmount: true };
 }>;
+
+export type AddNewVodafonePhoneNumber = Prisma.VodafoneGetPayload<{
+  select: { phoneHolder: true; phoneNumber: true };
+}>;
+
+export interface AddNewNumberFormProps {
+  onSubmit: (values: z.infer<typeof AddNewVodafoneNumber>) => void;
+}
 
 export const vodafonePhoneNumberSelect = {
   id: true,
@@ -85,3 +95,29 @@ export type ClientTablePropsWithRelations = Prisma.ClientGetPayload<{
     VodafoneWithdrawal: true;
   };
 }>;
+
+export interface DateRange {
+  from: Date;
+  to: Date | undefined;
+}
+
+export interface DateRangePickerProps {
+  /** Click handler for applying the updates from DateRangePicker. */
+  onUpdate?: (values: { range: DateRange; rangeCompare?: DateRange }) => void;
+  /** Initial value for start date */
+  initialDateFrom?: Date | string;
+  /** Initial value for end date */
+  initialDateTo?: Date | string;
+  /** Alignment of popover */
+  align?: "start" | "center" | "end";
+  /** Option for locale */
+  locale?: string;
+  /** Option for showing compare feature */
+  showCompare?: boolean;
+  setRangeObject: React.Dispatch<
+    React.SetStateAction<{
+      from: Date;
+      to: Date | undefined;
+    }>
+  >;
+}

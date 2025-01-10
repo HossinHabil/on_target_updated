@@ -35,11 +35,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { deleteUserFun, handleRoleFun } from "@/actions/dashboard/updateData";
-import { UsersTableProps } from "@/lib/types";
-import RoleSwitcher from "./RoleSwitcher";
+import { Vodafone } from "@prisma/client";
+import VodafoneDropdownCell from "./VodafoneDropdownCell";
+import AddNewNumber from "./AddNewNumber";
 
-export const columns: ColumnDef<UsersTableProps>[] = [
+export const columns: ColumnDef<Vodafone>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -63,31 +63,88 @@ export const columns: ColumnDef<UsersTableProps>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    accessorKey: "reserved",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" className="pl-0">
+          Reserved
+        </Button>
+      );
+    },
+    // cell: ({ row }) => <div className="capitalize">{row.getValue("reserved")}</div>,
   },
   {
-    accessorKey: "email",
+    accessorKey: "phoneHolder",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="pl-0"
         >
-          Email
+          Phone Holder
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("phoneHolder")}</div>
+    ),
   },
   {
-    accessorKey: "role",
-    header: "Role",
+    accessorKey: "phoneNumber",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" className="pl-0">
+          Phone Number
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "monthlyAmount",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" className="pl-0">
+          Monthly Amount
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "monthlyLimit",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" className="pl-0">
+          Monthly Limit
+        </Button>
+      );
+    },
+    // cell: ({ row }) => <div className="">{row.getValue("monthlyLimit")}</div>,
+  },
+  {
+    accessorKey: "initialAmount",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" className="pl-0">
+          Initial Amount
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "totalAmount",
+    header: () => <div className="text-right">Total Amount</div>,
     cell: ({ row }) => {
-      const item = row.original;
-      return <RoleSwitcher item={item} />;
+      const amount = parseFloat(row.getValue("totalAmount"));
+
+      // Format the amount as a dollar amount
+      const formatted = new Intl.NumberFormat("egp", {
+        style: "currency",
+        currency: "EGP",
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
   {
@@ -95,36 +152,15 @@ export const columns: ColumnDef<UsersTableProps>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const item = row.original;
-      const deleteUserHandler = async (data: UsersTableProps) => {
-        const { id, role } = data;
-        // await deleteUserFun(id, role)
-      };
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => deleteUserHandler(item)}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <VodafoneDropdownCell {...item} />;
     },
   },
 ];
 
-export default function UsersTable({
-  usersList,
+export default function VodafoneTable({
+  vodafoneData,
 }: {
-  usersList: UsersTableProps[];
+  vodafoneData: Vodafone[];
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -135,7 +171,7 @@ export default function UsersTable({
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data: usersList,
+    data: vodafoneData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -157,10 +193,12 @@ export default function UsersTable({
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter phone number..."
+          value={
+            (table.getColumn("phoneNumber")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("phoneNumber")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -241,11 +279,12 @@ export default function UsersTable({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
+        <AddNewNumber />
         <div className="space-x-2">
           <Button
             variant="outline"

@@ -61,7 +61,6 @@ export default function QrCode() {
         });
       } else {
         // Create a new Client
-        console.log(decryptedData);
         createUserCodeMutation.mutate(decryptedData, {
           onSuccess: async (data) => {
             await delay(1500);
