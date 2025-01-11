@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { TransactionStatus } from "@prisma/client";
+import { env } from "@/env";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const {
       transaction_id,
@@ -78,8 +79,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       });
 
       return NextResponse.json({
-        // redirectUrl: `https://www.ontarget.exchange/steps/4?id=${transaction_id}`,
-        redirectUrl: `http://localhost:3000/steps/4?id=${transaction_id}`,
+        redirectUrl: `${env.NEXT_PUBLIC_BASE_URL}/steps/4?id=${transaction_id}`,
       });
     }
 
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       );
     } else {
       return NextResponse.json({
-        redirectUrl: `https://www.ontarget.exchange/en/steps/4?id=${existingTransaction?.transactionCode}`,
+        redirectUrl: `${env.NEXT_PUBLIC_BASE_URL}/steps/4?id=${existingTransaction?.transactionCode}`,
       });
     }
   } catch (error: any) {
