@@ -22,8 +22,11 @@ export default async function Page() {
           </div>
           <div className="space-y-5">
             <LoginForm />
-            <Link href="/signup" className="block text-center hover:underline">
-              Don&apos;t have an account? Signup
+            <Link href="/signup" className="block text-center underline">
+              Don&apos;t have an account?
+            </Link>
+            <Link href="/forgot-password" className="block text-center underline">
+              Forgot Password
             </Link>
           </div>
         </div>
