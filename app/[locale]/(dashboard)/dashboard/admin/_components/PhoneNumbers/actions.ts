@@ -71,7 +71,7 @@ export const submitVodafoneNumber = async ({phoneHolder, phoneNumber}: AddNewVod
       data: {
         phoneHolder,
         phoneNumber,
-        initialAmount: 6000,
+        initialAmount: 60000,
         monthlyAmount: 0,
         totalAmount: 0,
       }
