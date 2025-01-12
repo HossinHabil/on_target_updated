@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import CryptoJS from "crypto-js";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 import {
   generateUploadButton,
@@ -62,12 +62,39 @@ export const getDateAdjustedForTimezone = (dateInput: Date | string): Date => {
   }
 };
 
+type DataRow = { [key: string]: any };
+
 // Excel
-export const exportToExcel = (data: any, fileName: string) => {
-  const worksheet = XLSX.utils.json_to_sheet(data);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-  XLSX.writeFile(workbook, fileName);
+export const exportToExcel = async (data: DataRow[], fileName: string) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Sheet1");
+
+  if (data.length > 0) {
+    // Add headers from the keys of the first object in the data array
+    const headers = Object.keys(data[0]);
+    worksheet.addRow(headers);
+
+    // Add rows for each data entry
+    data.forEach((item) => {
+      const row = headers.map((header) => item[header] || "");
+      worksheet.addRow(row);
+    });
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
+
+  // Trigger download in the browser
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 // uploadthing
