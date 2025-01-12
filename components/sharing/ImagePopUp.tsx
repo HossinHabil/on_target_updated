@@ -26,7 +26,13 @@ export const ImagePopUp = ({ item, title }: ImagePopUpProps) => {
         <VisuallyHidden>
           <DialogTitle>{title}</DialogTitle>
         </VisuallyHidden>
-        <Image src={item} width={600} height={600} alt="image" />
+        <Image
+          src={item}
+          width={600}
+          height={600}
+          alt="image"
+          className="rounded-md"
+        />
       </DialogContent>
     </Dialog>
   );

@@ -71,3 +71,8 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.flag {
+  position: absolute;
+  left: 0.5rem;
+}

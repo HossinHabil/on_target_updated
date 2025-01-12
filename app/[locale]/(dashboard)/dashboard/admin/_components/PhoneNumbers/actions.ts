@@ -25,7 +25,11 @@ export const fetchVodafoneNumbers = async () => {
       };
     }
 
-    const vodafoneNumbers = await db.vodafone.findMany();
+    const vodafoneNumbers = await db.vodafone.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
     if (!vodafoneNumbers.length) {
       return {
@@ -49,7 +53,10 @@ export const fetchVodafoneNumbers = async () => {
   }
 };
 
-export const submitVodafoneNumber = async ({phoneHolder, phoneNumber}: AddNewVodafonePhoneNumber) => {
+export const submitVodafoneNumber = async ({
+  phoneHolder,
+  phoneNumber,
+}: AddNewVodafonePhoneNumber) => {
   try {
     const session = await auth();
 
@@ -74,13 +81,13 @@ export const submitVodafoneNumber = async ({phoneHolder, phoneNumber}: AddNewVod
         initialAmount: 60000,
         monthlyAmount: 0,
         totalAmount: 0,
-      }
-    })
+      },
+    });
 
     return {
       status: 200,
       message: "Vodafone number has been submited successfully",
-    }
+    };
   } catch (error) {
     return {
       status: 500,
@@ -89,7 +96,7 @@ export const submitVodafoneNumber = async ({phoneHolder, phoneNumber}: AddNewVod
     };
   }
 };
-export const deleteVodafonePhoneNumber = async ({id}: Vodafone) => {
+export const deleteVodafonePhoneNumber = async ({ id }: Vodafone) => {
   try {
     const session = await auth();
 
@@ -109,14 +116,14 @@ export const deleteVodafonePhoneNumber = async ({id}: Vodafone) => {
 
     await db.vodafone.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
     return {
       status: 200,
       message: "Vodafone number has been deleted successfully",
-    }
+    };
   } catch (error) {
     return {
       status: 500,

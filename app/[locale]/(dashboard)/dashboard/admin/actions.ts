@@ -32,6 +32,9 @@ export const fetchUsers = async () => {
         image: true,
         id: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     if (!users.length) {
@@ -246,6 +249,9 @@ export const fetchClients = async ({}) => {
         fawryPay: true,
         VodafoneWithdrawal: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      }
     });
 
     if (!clients.length) {

@@ -29,7 +29,10 @@ export const ImageCarousel = ({
       <DialogTrigger asChild>
         <Button variant="outline">{title}</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[40rem] w-full" aria-describedby={undefined}>
+      <DialogContent
+        className="max-w-[40rem] w-full"
+        aria-describedby={undefined}
+      >
         <VisuallyHidden>
           <DialogTitle>{title}</DialogTitle>
         </VisuallyHidden>
@@ -38,9 +41,15 @@ export const ImageCarousel = ({
             {items.map((item, index) => (
               <CarouselItem key={index}>
                 <div className="p-1">
-                  <Card>
-                    <CardContent className="flex aspect-square items-center justify-center p-6">
-                      <Image src={item} alt="image" width={200} height={200} />
+                  <Card className="border-0">
+                    <CardContent className="flex aspect-square items-center justify-center !p-0">
+                      <Image
+                        src={item}
+                        alt="image"
+                        width={700}
+                        height={700}
+                        className="rounded-md"
+                      />
                     </CardContent>
                   </Card>
                 </div>
