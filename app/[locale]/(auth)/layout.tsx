@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 
 export default async function AuthLayout({
   children,
@@ -9,7 +9,10 @@ export default async function AuthLayout({
   const session = await auth();
 
   if (session) {
-    redirect("/dashboard");
+    redirect({
+      href: "/dashboard",
+      locale: "en"
+    });
   }
   return <>{children}</>;
 }
