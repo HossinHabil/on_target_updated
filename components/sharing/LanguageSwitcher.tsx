@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Locale, usePathname, useRouter, routing } from "@/i18n/routing";
 import { Languages } from "lucide-react";
 import {
@@ -16,6 +16,8 @@ export default function LocaleSwitcherSelect() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
+  const searchParam = useSearchParams();
+  const transactionId = searchParam.get("id");
   const params = useParams();
   const routes = routing.locales;
 
@@ -25,7 +27,7 @@ export default function LocaleSwitcherSelect() {
         // @ts-expect-error -- TypeScript will validate that only known `params`
         // are used in combination with a given `pathname`. Since the two will
         // always match for the current route, we can skip runtime checks.
-        { pathname, params },
+        { pathname, params, query: transactionId ? { id: transactionId } : {} },
         { locale }
       );
       router.refresh();
