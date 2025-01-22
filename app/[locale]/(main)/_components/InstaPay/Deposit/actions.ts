@@ -2,14 +2,20 @@
 
 import { db } from "@/lib/db";
 import { LocalStorageData } from "@/lib/types";
+import { InstaPayTemplate } from "@/templates/english/instapay/InstaPayTemplate";
+import { newClientEn } from "@/templates/english/transactionPending";
+import sendEmail from "@/utils/sendEmail";
 import { TransactionStatus } from "@prisma/client";
 import crypto from "crypto";
+import { getLocale } from "next-intl/server";
 
 export const updateUserCode = async (decryptedData: LocalStorageData) => {
   try {
     if (!decryptedData) {
       throw new Error("Decrypted data is required");
     }
+
+    const locale = await getLocale();
 
     if (decryptedData.uploadedImage.length === 0) {
       throw new Error("You have to complete uploading all the documents");
@@ -40,11 +46,38 @@ export const updateUserCode = async (decryptedData: LocalStorageData) => {
         imageUrl: decryptedData.uploadedImage,
         transactionStatus: TransactionStatus.Pending,
         InstaPay: {
-          update: {
-            qrCodeImage: decryptedData.uploadedImage[0],
-          },
+          create: {
+            qrCodeImage: decryptedData.uploadedImage[0]
+          }
         },
       },
+    });
+
+    if (!updatedClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: updatedClient.email,
+      subjectAdmin: `New InstaPay Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: InstaPayTemplate({
+        decryptedData,
+        transactionCode: decryptedData.transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en"
+          ? newClientEn(updatedClient)
+          : newClientEn(updatedClient)
+      }`,
     });
 
     return {
@@ -68,13 +101,15 @@ export const createUserCode = async (decryptedData: LocalStorageData) => {
       throw new Error("Decrypted data is required");
     }
 
+    const locale = await getLocale();
+
     if (!decryptedData.uploadedImage[0]) {
       throw new Error("The uploaded image URL is missing or invalid.");
     }
 
     const transactionCode = crypto.randomInt(100_000, 1_000_000).toString();
 
-    await db.client.create({
+    const createdClient = await db.client.create({
       data: {
         fullName: decryptedData.fullName,
         email: decryptedData.email,
@@ -91,6 +126,33 @@ export const createUserCode = async (decryptedData: LocalStorageData) => {
           },
         },
       },
+    });
+
+    if (!createdClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: createdClient.email,
+      subjectAdmin: `New InstaPay Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: InstaPayTemplate({
+        decryptedData,
+        transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en"
+          ? newClientEn(createdClient)
+          : newClientEn(createdClient)
+      }`,
     });
 
     return {
@@ -117,6 +179,8 @@ export const updateUserName = async (decryptedData: LocalStorageData) => {
       throw new Error("You have to complete uploading all the documents");
     }
 
+    const locale = await getLocale();
+
     const existingClient = await db.client.findUnique({
       where: {
         transactionCode: decryptedData.transactionCode,
@@ -149,6 +213,33 @@ export const updateUserName = async (decryptedData: LocalStorageData) => {
       },
     });
 
+    if (!updatedClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: updatedClient.email,
+      subjectAdmin: `New InstaPay Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: InstaPayTemplate({
+        decryptedData,
+        transactionCode: decryptedData.transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en"
+          ? newClientEn(updatedClient)
+          : newClientEn(updatedClient)
+      }`,
+    });
+
     return {
       status: 200,
       message: "Done, Transaction has been submitted successfully",
@@ -170,13 +261,15 @@ export const createUserName = async (decryptedData: LocalStorageData) => {
       throw new Error("Decrypted data is required");
     }
 
+    const locale = await getLocale();
+
     if (decryptedData.uploadedImage.length === 0) {
       throw new Error("You have to complete uploading all the documents");
     }
 
     const transactionCode = crypto.randomInt(100_000, 1_000_000).toString();
 
-    await db.client.create({
+    const createdClient = await db.client.create({
       include: {
         InstaPay: true,
       },
@@ -196,6 +289,33 @@ export const createUserName = async (decryptedData: LocalStorageData) => {
           },
         },
       },
+    });
+
+    if (!createdClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: createdClient.email,
+      subjectAdmin: `New InstaPay Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: InstaPayTemplate({
+        decryptedData,
+        transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en"
+          ? newClientEn(createdClient)
+          : newClientEn(createdClient)
+      }`,
     });
 
     return {

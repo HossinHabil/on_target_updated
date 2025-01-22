@@ -12,6 +12,9 @@ import { ClientUploadedFileData } from "uploadthing/types";
 import { UTApi } from "uploadthing/server";
 import { TransactionStatus } from "@prisma/client";
 import { getLocale } from "next-intl/server";
+import { VodafoneTemplate } from "@/templates/english/vodafone/vodafoneTemplate";
+import { newClientEn } from "@/templates/english/transactionPending";
+import sendEmail from "@/utils/sendEmail";
 
 const utapi = new UTApi();
 
@@ -239,6 +242,8 @@ export const updateVodafoneDeposit = async ({
       throw new Error("Phone numbers array is required and cannot be empty");
     }
 
+    const locale = await getLocale();
+
     const existingClient = await db.client.findUnique({
       where: {
         transactionCode: decryptedData.transactionCode,
@@ -251,8 +256,8 @@ export const updateVodafoneDeposit = async ({
       );
     }
 
-    const result = await db.$transaction(async (tx) => {
-      const updatedClient = await tx.client.update({
+    const updatedClient = await db.$transaction(async (tx) => {
+      const client = await tx.client.update({
         where: {
           transactionCode: decryptedData.transactionCode,
         },
@@ -288,7 +293,36 @@ export const updateVodafoneDeposit = async ({
         });
       }
 
-      return updatedClient;
+      return client;
+    });
+
+    if (!updatedClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: updatedClient.email,
+      subjectAdmin: `New Vodafone Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: VodafoneTemplate({
+        decryptedData,
+        remainderAmount,
+        phoneNumbersArray,
+        transactionCode: decryptedData.transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en"
+          ? newClientEn(updatedClient)
+          : newClientEn(updatedClient)
+      }`,
     });
 
     return {
@@ -368,6 +402,31 @@ export const createVodafoneDeposit = async ({
       return createdClient;
     });
 
+    if (!newClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: newClient.email,
+      subjectAdmin: `New Vodafone Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: VodafoneTemplate({
+        decryptedData,
+        transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en" ? newClientEn(newClient) : newClientEn(newClient)
+      }`,
+    });
+
     return {
       status: 200,
       message: "Done, Transaction has been submitted successfully",
@@ -422,7 +481,7 @@ export const updateVodafoneWithdrawal = async ({
       VodafoneWithdrawal: { create: transferAmounts },
     };
 
-    await db.client.update({
+    const updatedClient = await db.client.update({
       where: {
         transactionCode: decryptedData.transactionCode,
       },
@@ -430,6 +489,34 @@ export const updateVodafoneWithdrawal = async ({
         VodafoneWithdrawal: true,
       },
       data: clientData,
+    });
+
+    if (!updatedClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: updatedClient.email,
+      subjectAdmin: `New Vodafone Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: VodafoneTemplate({
+        decryptedData,
+        phoneNumbersValues: values,
+        transactionCode: clientData.transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en"
+          ? newClientEn(updatedClient)
+          : newClientEn(updatedClient)
+      }`,
     });
 
     return {
@@ -480,6 +567,31 @@ export const createVodafoneWithdrawal = async ({
         include: { VodafoneWithdrawal: true },
         data: clientData,
       });
+    });
+
+    if (!newClient.email) {
+      throw new Error(
+        `Client with transactionCode ${decryptedData.transactionCode} not found`
+      );
+    }
+
+    await sendEmail({
+      from: "mail@ontarget.exchange",
+      toAdmin: "hossinhabil@gmail.com",
+      toClient: newClient.email,
+      subjectAdmin: `New Vodafone Client Registration`,
+      subjectClient: `${
+        locale === "en"
+          ? "Payment Pending – We’re On It"
+          : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
+      }`,
+      bodyAdmin: VodafoneTemplate({
+        decryptedData,
+        transactionCode,
+      }),
+      bodyClient: `${
+        locale === "en" ? newClientEn(newClient) : newClientEn(newClient)
+      }`,
     });
 
     return {

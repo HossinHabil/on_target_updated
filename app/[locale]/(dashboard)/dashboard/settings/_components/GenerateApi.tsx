@@ -30,7 +30,7 @@ export default function GenerateApi() {
 
   return (
     <div className="flex flex-col gap-8 max-w-5xl mx-auto">
-      <Button onClick={() => mutate()}>Generate</Button>
+      <Button onClick={() => mutate()} className="max-w-32 mx-auto p-4">Generate</Button>
       <div className="border-muted-foreground w-full h-16 bg-card flex flex-col items-center justify-center relative">
         {handleStatus()}
         {status === "success" && (

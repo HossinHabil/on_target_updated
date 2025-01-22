@@ -1,4 +1,4 @@
-import { Settings, Home } from "lucide-react";
+import { Settings, Home, Key, User } from "lucide-react";
 
 export const titleData = {
   title: [
@@ -155,3 +155,18 @@ export const declineReasons = [
   },
   { id: "MF02", service: "myfawryapp", reason: "Incorrect payment details." },
 ];
+
+export const settingsMenuBarLinks = [
+  {
+    id: 1,
+    name: "API Key",
+    href: "/dashboard/settings/api",
+    icon: Key,
+  },
+  {
+    id: 2,
+    name: "Profile",
+    href: "/dashboard/settings/profile",
+    icon: User,
+  }
+]
