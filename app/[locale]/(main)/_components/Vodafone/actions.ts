@@ -12,9 +12,9 @@ import { ClientUploadedFileData } from "uploadthing/types";
 import { UTApi } from "uploadthing/server";
 import { TransactionStatus } from "@prisma/client";
 import { getLocale } from "next-intl/server";
-import { VodafoneTemplate } from "@/templates/english/vodafone/vodafoneTemplate";
 import { newClientEn } from "@/templates/english/transactionPending";
 import sendEmail from "@/utils/sendEmail";
+import { newRegistrationEmailTemplate } from "@/templates/english/newRegistrationEmailTemplate";
 
 const utapi = new UTApi();
 
@@ -304,7 +304,7 @@ export const updateVodafoneDeposit = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -312,10 +312,8 @@ export const updateVodafoneDeposit = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: VodafoneTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
-        remainderAmount,
-        phoneNumbersArray,
         transactionCode: decryptedData.transactionCode,
       }),
       bodyClient: `${
@@ -410,7 +408,7 @@ export const createVodafoneDeposit = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: newClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -418,7 +416,7 @@ export const createVodafoneDeposit = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: VodafoneTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode,
       }),
@@ -499,7 +497,7 @@ export const updateVodafoneWithdrawal = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -507,9 +505,8 @@ export const updateVodafoneWithdrawal = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: VodafoneTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
-        phoneNumbersValues: values,
         transactionCode: clientData.transactionCode,
       }),
       bodyClient: `${
@@ -577,7 +574,7 @@ export const createVodafoneWithdrawal = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: newClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -585,7 +582,7 @@ export const createVodafoneWithdrawal = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: VodafoneTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode,
       }),

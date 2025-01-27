@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Clients from "./_components/Clients/Clients";
 import Users from "./_components/Users/Users";
 import Vodafone from "./_components/PhoneNumbers/Vodafone";
+import PaymentMethodNames from "./_components/paymentMethods/PaymentMethods";
 
 export default async function Admin() {
   const session = await auth();
@@ -21,6 +22,7 @@ export default async function Admin() {
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="phone_numbers">Phone Numbers</TabsTrigger>
+          <TabsTrigger value="payment_methods">Payment Methods</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="w-full">
@@ -31,6 +33,9 @@ export default async function Admin() {
         </TabsContent>
         <TabsContent value="phone_numbers" className="w-full">
           <Vodafone />
+        </TabsContent>
+        <TabsContent value="payment_methods" className="w-full">
+          <PaymentMethodNames />
         </TabsContent>
       </Tabs>
     </div>

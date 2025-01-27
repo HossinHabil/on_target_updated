@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 import Image from "next/image";
@@ -30,9 +30,23 @@ import {
   LOCAL_STORAGE_TRANSACTION_KEY,
 } from "@/lib/utils";
 import { useLocalStorage } from "usehooks-ts";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { env } from "@/env";
 import LoadingButton from "@/components/sharing/LoadingButton";
+import { useFetchUsers } from "@/app/[locale]/(dashboard)/dashboard/admin/mutations";
+import { useFetchUsersThroughTransactionId } from "./mutations";
+import PaymentMethodsSkeletonCards from "@/components/sharing/skeleton/PaymentMethodsSkeletonCards";
+import { PaymentMethod } from "@prisma/client";
+import StepFourForm from "./StepFourForm";
+
+export interface PaymentMethodsList {
+  id: string;
+  name: string;
+  image: string;
+  value: {
+    paymentMethodName: string;
+  };
+}
 
 export default function StepFour() {
   const { toast } = useToast();
@@ -44,8 +58,9 @@ export default function StepFour() {
       ""
     );
   const router = useRouter();
-  const locale = useLocale();
   const t2 = useTranslations("pagination");
+
+  const { data, status } = useFetchUsersThroughTransactionId({ transactionId });
 
   const form = useForm<z.infer<typeof FormSchemaStepFour>>({
     resolver: zodResolver(FormSchemaStepFour),
@@ -92,6 +107,7 @@ export default function StepFour() {
         transactionAction: clientData?.data?.transactionAction,
         transactionCode: transactionId,
       };
+      console.log("collectedData", collectedData);
       const encryptedData = encryptData(
         collectedData,
         env.NEXT_PUBLIC_CRYPTO_SECRET_KEY
@@ -128,68 +144,63 @@ export default function StepFour() {
     }
   };
 
-  return (
-    <Form {...form}>
-      <form className="space-y-4 text-center w-full">
-        <div className="max-w-[50rem] mx-auto flex flex-col gap-8">
-          <FormField
-            control={form.control}
-            name="paymentMethodName"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={(newValue) => {
-                      field.onChange(newValue);
-                      onSubmitHandler({
-                        ...form.getValues(),
-                        paymentMethodName: newValue,
-                      });
-                    }}
-                    className="grid md:grid-cols-2 lg:grid-cols-3"
-                  >
-                    {paymentsMethods.map((action) => {
-                      return (
-                        <FormItem key={action.id} className="h-60 w-full">
-                          <FormControl>
-                            <RadioGroupItem
-                              value={action.value.paymentMethodName}
-                              className="peer sr-only"
-                            ></RadioGroupItem>
-                          </FormControl>
-                          <FormMessage />
-                          <FormLabel className="flex !justify-center text-2xl md:text-3xl font-semibold cursor-pointer !items-center gap-4 rounded-md border p-2 shadow-sm hover:border-ring peer-focus-visible:ring-1 peer-aria-checked:border-ring h-full lg:flex-col lg:items-start lg:justify-between lg:p-5">
-                            <Image
-                              src={action.image}
-                              id={action.id as string}
-                              alt={action.name}
-                              width={200}
-                              height={200}
-                              className="cursor-pointer mx-auto my-4 h-full"
-                            />
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    })}
-                  </RadioGroup>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
+  if (status === "pending") {
+    return <PaymentMethodsSkeletonCards />;
+  }
 
-        <div className="flex w-full justify-between p-4 max-w-[50rem] mx-auto">
-          {!transactionId && (
-            <LoadingButton
-              type="button"
-              onClick={() => router.replace(`/steps/3`)}
-            >
-              {t2("back")}
-            </LoadingButton>
-          )}
-        </div>
-      </form>
-    </Form>
-  );
+  if (status === "error") {
+    return (
+      <h2 className="text-center text-muted-foreground">
+        An error occurred while fetching users
+      </h2>
+    );
+  }
+
+  if (status === "success") {
+    if (!data?.data || data?.data.length === 0) {
+      return (
+        <Form {...form}>
+          <form className="space-y-4 text-center w-full">
+            <StepFourForm
+              form={form}
+              onSubmitHandler={onSubmitHandler}
+              finalPaymentMethod={paymentsMethods}
+            />
+            <div className="flex w-full justify-between p-4 max-w-[50rem] mx-auto">
+              {!transactionId && (
+                <LoadingButton
+                  type="button"
+                  onClick={() => router.replace(`/steps/3`)}
+                >
+                  {t2("back")}
+                </LoadingButton>
+              )}
+            </div>
+          </form>
+        </Form>
+      );
+    } else {
+      return (
+        <Form {...form}>
+          <form className="space-y-4 text-center w-full">
+            <StepFourForm
+              form={form}
+              onSubmitHandler={onSubmitHandler}
+              finalPaymentMethod={data.data}
+            />
+            <div className="flex w-full justify-between p-4 max-w-[50rem] mx-auto">
+              {!transactionId && (
+                <LoadingButton
+                  type="button"
+                  onClick={() => router.replace(`/steps/3`)}
+                >
+                  {t2("back")}
+                </LoadingButton>
+              )}
+            </div>
+          </form>
+        </Form>
+      );
+    }
+  }
 }

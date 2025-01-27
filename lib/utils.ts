@@ -97,6 +97,30 @@ export const exportToExcel = async (data: DataRow[], fileName: string) => {
   document.body.removeChild(link);
 };
 
+// Format Time
+
+interface DateTimeFormatOptions {
+  date: Date;
+  locale?: string;
+}
+
+export const formatDateTime = ({ date, locale = "en-US" }: DateTimeFormatOptions) => {
+  if (!(date instanceof Date)) {
+    date = new Date(date); // Ensure it's a Date object
+  }
+  return date.toLocaleString(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+    timeZoneName: "short",
+  });
+};
+
+
 // uploadthing
 export const UploadButton = generateUploadButton<AppFileRouter>();
 export const UploadDropzone = generateUploadDropzone<AppFileRouter>();

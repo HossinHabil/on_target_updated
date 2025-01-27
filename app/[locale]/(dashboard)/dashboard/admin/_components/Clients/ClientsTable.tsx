@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/table";
 import { ClientTablePropsWithRelations } from "@/lib/types";
 import ClientDropdownCell from "./ClientDropdownCell";
-import { exportToExcel } from "@/lib/utils";
+import { exportToExcel, formatDateTime } from "@/lib/utils";
 import { DateRangePicker } from "../DateRangePicker";
 
 export const columns: ColumnDef<ClientTablePropsWithRelations>[] = [
@@ -222,6 +222,21 @@ export const columns: ColumnDef<ClientTablePropsWithRelations>[] = [
           Transaction Code
         </Button>
       );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return (
+        <Button variant="ghost" className="pl-0">
+          Created At
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const createdAt = row.original.createdAt;
+      console.log("createdAt", createdAt);
+      return <div>{formatDateTime({ date: createdAt })}</div>;
     },
   },
   {

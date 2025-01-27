@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { LocalStorageData } from "@/lib/types";
-import { InstaPayTemplate } from "@/templates/english/instapay/InstaPayTemplate";
+import { newRegistrationEmailTemplate } from "@/templates/english/newRegistrationEmailTemplate";
 import { newClientEn } from "@/templates/english/transactionPending";
 import sendEmail from "@/utils/sendEmail";
 import { TransactionStatus } from "@prisma/client";
@@ -61,7 +61,7 @@ export const updateUserCode = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -69,7 +69,7 @@ export const updateUserCode = async (decryptedData: LocalStorageData) => {
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode: decryptedData.transactionCode,
       }),
@@ -136,7 +136,7 @@ export const createUserCode = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -144,7 +144,7 @@ export const createUserCode = async (decryptedData: LocalStorageData) => {
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode,
       }),
@@ -221,7 +221,7 @@ export const updateUserName = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -229,7 +229,7 @@ export const updateUserName = async (decryptedData: LocalStorageData) => {
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode: decryptedData.transactionCode,
       }),
@@ -299,7 +299,7 @@ export const createUserName = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -307,7 +307,7 @@ export const createUserName = async (decryptedData: LocalStorageData) => {
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode,
       }),

@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { BankTransferWithdrawalType } from "./schema/MultiStepFormSchema";
-import { AddNewVodafoneNumber } from "./schema/Dashboard";
+import { AddNewVodafoneNumber, AddPaymentMethod } from "./schema/Dashboard";
 import { z } from "zod";
 
 export interface LocalStorageData {
@@ -25,6 +25,9 @@ export type AddNewVodafonePhoneNumber = Prisma.VodafoneGetPayload<{
 
 export interface AddNewNumberFormProps {
   onSubmit: (values: z.infer<typeof AddNewVodafoneNumber>) => void;
+}
+export interface AddPaymentMethodFormProps {
+  onSubmit: (values: z.infer<typeof AddPaymentMethod>) => void;
 }
 
 export const vodafonePhoneNumberSelect = {
@@ -120,4 +123,20 @@ export interface DateRangePickerProps {
       to: Date | undefined;
     }>
   >;
+}
+
+export interface updatePaymentMethodProps {
+  inputValues: z.infer<typeof AddPaymentMethod>;
+  updatedImage: string;
+  id: string;
+}
+export interface addPaymentMethodProps {
+  inputValues: z.infer<typeof AddPaymentMethod>;
+  updatedImage: string;
+}
+
+export interface updatePaymentMethodsUserListProps {
+  selectedPaymentMethodId: string;
+  userId: string;
+  action: "connect" | "disconnect";
 }

@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const clientsQueryKey: QueryKey = ["fetchClients"];
 const usersQueryKey: QueryKey = ["fetchUsers"];
+const paymentMethodsQueryKey: QueryKey = ["paymentMethods"];
 
 export function useFetchUsers() {
   return useQuery({

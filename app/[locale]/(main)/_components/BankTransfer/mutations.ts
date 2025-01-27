@@ -13,6 +13,11 @@ export function useUpdateBankTransferDeposit() {
   return useMutation({
     mutationFn: (decryptedData: LocalStorageData) =>
       updateBankTransferDeposit(decryptedData),
+    onSuccess: (data) => {
+      toast({
+        title: data.message,
+      });
+    },
   });
 }
 
@@ -37,6 +42,11 @@ export function useUpdateBankTransferWithdrawal() {
         decryptedData,
         values,
       }),
+    onSuccess: (data) => {
+      toast({
+        title: data.message,
+      });
+    },
   });
 }
 

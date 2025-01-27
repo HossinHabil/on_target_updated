@@ -12,3 +12,8 @@ export const AddNewVodafoneNumber = z.object({
     .max(15)
     .regex(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number")
 })
+
+export const AddPaymentMethod = z.object({
+    name: z.string().min(1, "Required"),
+    content: z.string().optional()
+})

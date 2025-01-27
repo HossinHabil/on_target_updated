@@ -7,10 +7,10 @@ import {
 } from "@/lib/types";
 import { TransactionStatus } from "@prisma/client";
 import crypto from "crypto";
-import { InstaPayTemplate } from "@/templates/english/instapay/InstaPayTemplate";
 import { newClientEn } from "@/templates/english/transactionPending";
 import sendEmail from "@/utils/sendEmail";
 import { getLocale } from "next-intl/server";
+import { newRegistrationEmailTemplate } from "@/templates/english/newRegistrationEmailTemplate";
 
 export const updatePhoneNumber = async ({
   decryptedData,
@@ -68,7 +68,7 @@ export const updatePhoneNumber = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -76,10 +76,9 @@ export const updatePhoneNumber = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode: decryptedData.transactionCode,
-        phoneNumbersValues: values
       }),
       bodyClient: `${
         locale === "en"
@@ -151,7 +150,7 @@ export const createPhoneNumber = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -159,10 +158,9 @@ export const createPhoneNumber = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode,
-        phoneNumbersValues: values
       }),
       bodyClient: `${
         locale === "en"
@@ -241,7 +239,7 @@ export const updateUserCode = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -249,10 +247,9 @@ export const updateUserCode = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode: decryptedData.transactionCode,
-        userCodevalues: values,
       }),
       bodyClient: `${
         locale === "en"
@@ -324,7 +321,7 @@ export const createUserCode = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "hossinhabil@gmail.com",
+      toAdmin: "on-target-eg@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -332,10 +329,9 @@ export const createUserCode = async ({
           ? "Payment Pending – We’re On It"
           : "دفعتك قيد الانتظار - نحن نعمل على ذلك"
       }`,
-      bodyAdmin: InstaPayTemplate({
+      bodyAdmin: newRegistrationEmailTemplate({
         decryptedData,
         transactionCode,
-        userCodevalues: values,
       }),
       bodyClient: `${
         locale === "en"

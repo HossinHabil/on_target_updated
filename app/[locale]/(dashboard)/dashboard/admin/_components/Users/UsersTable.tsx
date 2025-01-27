@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,7 +32,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { deleteUserFun, handleRoleFun } from "@/actions/dashboard/updateData";
 import { UsersTableProps } from "@/lib/types";
 import RoleSwitcher from "../RoleSwitcher";
 import UserDropdownCell from "./UserDropdownCell";
@@ -93,9 +92,9 @@ export const columns: ColumnDef<UsersTableProps>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const item = row.original;
-      return <UserDropdownCell item={item}/>
+      return <UserDropdownCell item={item} />;
     },
-  },
+  }
 ];
 
 export default function UsersTable({

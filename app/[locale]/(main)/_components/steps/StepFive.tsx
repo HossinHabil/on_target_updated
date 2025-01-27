@@ -31,7 +31,7 @@ export default function StepFive() {
 
   const switchHandler = useCallback((paymentMethod: string) => {
     switch (paymentMethod) {
-      case "vodafone":
+      case "wallet":
         return <VodafoneComponent />;
       case "instapay":
         return <InstaPayComponent />;
@@ -50,7 +50,7 @@ export default function StepFive() {
   return (
     <>
       {decryptedData?.paymentMethodName &&
-        switchHandler(decryptedData?.paymentMethodName)}
+        switchHandler(decryptedData.paymentMethodName.toLowerCase().replace(/\s+/g, ""))}
     </>
   );
 }

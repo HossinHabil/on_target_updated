@@ -33,8 +33,8 @@ export const paymentsActions = [
 export const paymentsMethods = [
   {
     id: "1",
-    name: "Vodafone",
-    value: { paymentMethodName: "vodafone" },
+    name: "Wallet",
+    value: { paymentMethodName: "wallet" },
     image: "/main/paymentMethods/wallet.webp",
   },
   // {

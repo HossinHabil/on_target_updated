@@ -26,15 +26,16 @@ export const fetchUsers = async () => {
 
     const users = await db.user.findMany({
       select: {
+        id: true,
         name: true,
         email: true,
         role: true,
         image: true,
-        id: true,
+        paymentMethods: true,
       },
       orderBy: {
         createdAt: "desc",
-      },
+      }
     });
 
     if (!users.length) {
