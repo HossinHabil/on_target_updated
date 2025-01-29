@@ -1,8 +1,20 @@
 "use server";
 
 import { auth } from "@/auth";
+import { env } from "@/env";
 import { db } from "@/lib/db";
+import { approveClientTemplate } from "@/templates/approveClient";
+import { declineClientTemplate } from "@/templates/declineClient";
+import { deleteClientTemplate } from "@/templates/deleteClient";
+import { deleteUserTemplate } from "@/templates/deleteUser";
+import { updateUserRoleTemplate } from "@/templates/updateUserRole";
 import { Role } from "@prisma/client";
+import { Resend } from "resend";
+
+const resend = new Resend(env.RESEND_API_KEY);
+
+const BASE_EMAIL = "mail@ontarget.exchange";
+const ADMIN_EMAIL = "on-target-eg@outlook.com";
 
 export const fetchUsers = async () => {
   try {
@@ -35,7 +47,7 @@ export const fetchUsers = async () => {
       },
       orderBy: {
         createdAt: "desc",
-      }
+      },
     });
 
     if (!users.length) {
@@ -84,19 +96,35 @@ export const updateUserRole = async ({
       };
     }
 
-    await db.user.update({
+    const updatedUser = await db.user.update({
       where: {
         id: id,
       },
       data: {
         role,
       },
+      select: {
+        name: true,
+        email: true,
+        role: true,
+        image: true,
+      },
+    });
+
+    await resend.emails.send({
+      from: BASE_EMAIL,
+      to: ADMIN_EMAIL,
+      subject: "Update User Role",
+      html: updateUserRoleTemplate({
+        updatedUser: updatedUser,
+        adminSession: session,
+      }),
     });
 
     return {
       status: 200,
-      message: "Role updated successfully"
-    }
+      message: "Role updated successfully",
+    };
   } catch (error) {
     return {
       status: 500,
@@ -105,9 +133,8 @@ export const updateUserRole = async ({
   }
 };
 
-export const deleteClient = async ({id}: {id: string}) => {
+export const deleteClient = async ({ id }: { id: string }) => {
   try {
-
     const session = await auth();
 
     if (!session || !session.user) {
@@ -124,25 +151,41 @@ export const deleteClient = async ({id}: {id: string}) => {
       };
     }
 
-    await db.client.delete({
+    const deletedClient = await db.client.delete({
       where: {
-        id
-      }
+        id,
+      },
+    });
+
+    await resend.emails.send({
+      from: BASE_EMAIL,
+      to: ADMIN_EMAIL,
+      subject: "Delete Client",
+      html: deleteClientTemplate({
+        deletedClient: deletedClient,
+        adminSession: session,
+      }),
     });
 
     return {
       status: 200,
-      message: "Client was deleted successfully"
-    }
+      message: "Client was deleted successfully",
+    };
   } catch (error) {
     return {
       status: 500,
       message: "Internal Server Error",
-    }
+    };
   }
-}
+};
 
-export const declineClient = async ({id, declineReason}: {id: string, declineReason: string}) => {
+export const declineClient = async ({
+  id,
+  declineReason,
+}: {
+  id: string;
+  declineReason: string;
+}) => {
   try {
     const session = await auth();
 
@@ -160,7 +203,7 @@ export const declineClient = async ({id, declineReason}: {id: string, declineRea
       };
     }
 
-    await db.client.update({
+    const updatedClient = await db.client.update({
       where: {
         id,
       },
@@ -170,19 +213,30 @@ export const declineClient = async ({id, declineReason}: {id: string, declineRea
       },
     });
 
+    await resend.emails.send({
+      from: BASE_EMAIL,
+      to: ADMIN_EMAIL,
+      subject: "Client Declined",
+      html: declineClientTemplate({
+        updatedClient: updatedClient,
+        adminSession: session,
+        declineReason,
+      }),
+    });
+
     return {
       status: 200,
-      message: "Transaction status has been updated successfully"
-    }
+      message: "Transaction status has been updated successfully",
+    };
   } catch (error) {
     return {
       status: 500,
       message: "Internal Server Error",
-    }
+    };
   }
-}
+};
 
-export const approveClient = async ({id,}: {id: string}) => {
+export const approveClient = async ({ id }: { id: string }) => {
   try {
     const session = await auth();
 
@@ -200,26 +254,36 @@ export const approveClient = async ({id,}: {id: string}) => {
       };
     }
 
-    await db.client.update({
+    const updatedClient = await db.client.update({
       where: {
         id,
       },
       data: {
         transactionStatus: "Completed",
-      }
+      },
+    });
+
+    await resend.emails.send({
+      from: BASE_EMAIL,
+      to: ADMIN_EMAIL,
+      subject: "Client Approved",
+      html: approveClientTemplate({
+        updatedClient: updatedClient,
+        adminSession: session,
+      }),
     });
 
     return {
       status: 200,
-      message: "Transaction status has been updated successfully"
-    }
+      message: "Transaction status has been updated successfully",
+    };
   } catch (error) {
     return {
       status: 500,
       message: "Internal Server Error",
-    }
+    };
   }
-}
+};
 
 export const fetchClients = async ({}) => {
   try {
@@ -252,7 +316,7 @@ export const fetchClients = async ({}) => {
       },
       orderBy: {
         createdAt: "desc",
-      }
+      },
     });
 
     if (!clients.length) {
@@ -277,9 +341,8 @@ export const fetchClients = async ({}) => {
   }
 };
 
-export const deleteUser = async ({id}: {id: string}) => {
+export const deleteUser = async ({ id }: { id: string }) => {
   try {
-
     const session = await auth();
 
     if (!session || !session.user) {
@@ -296,20 +359,36 @@ export const deleteUser = async ({id}: {id: string}) => {
       };
     }
 
-    await db.user.delete({
+    const deletedUser = await db.user.delete({
       where: {
-        id
-      }
+        id,
+      },
+      select: {
+        name: true,
+        email: true,
+        image: true,
+        role: true,
+      },
+    });
+
+    await resend.emails.send({
+      from: BASE_EMAIL,
+      to: ADMIN_EMAIL,
+      subject: "Delete User",
+      html: deleteUserTemplate({
+        deletedUser: deletedUser,
+        adminSession: session,
+      }),
     });
 
     return {
       status: 200,
-      message: "User was deleted successfully"
-    }
+      message: "User was deleted successfully",
+    };
   } catch (error) {
     return {
       status: 500,
       message: "Internal Server Error",
-    }
+    };
   }
-}
+};

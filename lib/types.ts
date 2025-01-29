@@ -19,6 +19,10 @@ export type vodafonePhoneNumber = Prisma.VodafoneGetPayload<{
   select: { id: true; phoneNumber: true; initialAmount: true };
 }>;
 
+export type UserSelectedType = Prisma.UserGetPayload<{
+  select: { name: true; email: true; image: true; role: true };
+}>;
+
 export type AddNewVodafonePhoneNumber = Prisma.VodafoneGetPayload<{
   select: { phoneHolder: true; phoneNumber: true };
 }>;

@@ -117,11 +117,13 @@ export const columns: ColumnDef<ClientTablePropsWithRelations>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="capitalize">
+    cell: ({ row }) => {
+      return (
+        <div className="capitalize">
         {row.getValue("paymentMethodName") || "No Payment Method"}
       </div>
-    ),
+      )
+    },
   },
   {
     accessorKey: "transactionAction",

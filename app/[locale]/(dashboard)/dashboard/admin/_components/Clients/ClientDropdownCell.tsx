@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +21,7 @@ import {
   useDeclineClient,
   useDeleteClient,
 } from "../../mutations";
+import { useSession } from "next-auth/react";
 
 export default function ClientDropdownCell({
   item,
@@ -29,7 +32,9 @@ export default function ClientDropdownCell({
   const { mutate: declineClientMutation } = useDeclineClient();
   const { mutate: approveClientMutation } = useApproveClient();
 
-  console.log(item);
+  const {data: session} = useSession();
+
+  console.log("session", session);
 
   const filteredDeclineReasons = declineReasons.filter(
     (reason) =>

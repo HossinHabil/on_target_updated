@@ -9,9 +9,10 @@ export async function fetchUsersThroughTransactionId({
 }) {
   try {
     if (!transactionId) {
+      const paymentMethodsList = await db.paymentMethod.findMany();
       return {
         status: 201,
-        data: [],
+        data: paymentMethodsList,
       }
     }
 

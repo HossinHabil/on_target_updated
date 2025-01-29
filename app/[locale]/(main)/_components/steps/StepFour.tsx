@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
-import Image from "next/image";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,13 +10,7 @@ import { useForm } from "react-hook-form";
 
 import {
   Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 
 import { FormSchemaStepFour } from "@/lib/schema/MultiStepFormSchema";
@@ -33,10 +26,8 @@ import { useLocalStorage } from "usehooks-ts";
 import { useTranslations } from "next-intl";
 import { env } from "@/env";
 import LoadingButton from "@/components/sharing/LoadingButton";
-import { useFetchUsers } from "@/app/[locale]/(dashboard)/dashboard/admin/mutations";
 import { useFetchUsersThroughTransactionId } from "./mutations";
 import PaymentMethodsSkeletonCards from "@/components/sharing/skeleton/PaymentMethodsSkeletonCards";
-import { PaymentMethod } from "@prisma/client";
 import StepFourForm from "./StepFourForm";
 
 export interface PaymentMethodsList {

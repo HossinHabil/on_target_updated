@@ -18,6 +18,9 @@ import { newRegistrationEmailTemplate } from "@/templates/english/newRegistratio
 
 const utapi = new UTApi();
 
+const BASE_EMAIL="mail@ontarget.exchange";
+const ADMIN_EMAIL="on-target-eg@outlook.com"
+
 export const fetchPhoneNumbers = async (fetchedAmount: number) => {
   const totalAmount = fetchedAmount;
   const count = Math.ceil(fetchedAmount / 60000);
@@ -303,8 +306,8 @@ export const updateVodafoneDeposit = async ({
     }
 
     await sendEmail({
-      from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      from: BASE_EMAIL,
+      toAdmin: ADMIN_EMAIL,
       toClient: updatedClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -407,8 +410,8 @@ export const createVodafoneDeposit = async ({
     }
 
     await sendEmail({
-      from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      from: BASE_EMAIL,
+      toAdmin: ADMIN_EMAIL,
       toClient: newClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -496,8 +499,8 @@ export const updateVodafoneWithdrawal = async ({
     }
 
     await sendEmail({
-      from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      from: BASE_EMAIL,
+      toAdmin: ADMIN_EMAIL,
       toClient: updatedClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -573,8 +576,8 @@ export const createVodafoneWithdrawal = async ({
     }
 
     await sendEmail({
-      from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      from: BASE_EMAIL,
+      toAdmin: ADMIN_EMAIL,
       toClient: newClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
