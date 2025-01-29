@@ -19,7 +19,7 @@ import { newRegistrationEmailTemplate } from "@/templates/english/newRegistratio
 const utapi = new UTApi();
 
 const BASE_EMAIL="mail@ontarget.exchange";
-const ADMIN_EMAIL="on-target-eg@outlook.com"
+const ADMIN_EMAIL="ontargetnoti@outlook.com"
 
 export const fetchPhoneNumbers = async (fetchedAmount: number) => {
   const totalAmount = fetchedAmount;

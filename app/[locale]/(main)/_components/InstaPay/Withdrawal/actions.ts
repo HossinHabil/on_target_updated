@@ -68,7 +68,7 @@ export const updatePhoneNumber = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -150,7 +150,7 @@ export const createPhoneNumber = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -239,7 +239,7 @@ export const updateUserCode = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -321,7 +321,7 @@ export const createUserCode = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${

@@ -14,7 +14,7 @@ import { Resend } from "resend";
 const resend = new Resend(env.RESEND_API_KEY);
 
 const BASE_EMAIL = "mail@ontarget.exchange";
-const ADMIN_EMAIL = "on-target-eg@outlook.com";
+const ADMIN_EMAIL = "ontargetnoti@outlook.com";
 
 export const fetchUsers = async () => {
   try {

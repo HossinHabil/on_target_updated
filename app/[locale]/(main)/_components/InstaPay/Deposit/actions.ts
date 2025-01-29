@@ -61,7 +61,7 @@ export const updateUserCode = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -136,7 +136,7 @@ export const createUserCode = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -221,7 +221,7 @@ export const updateUserName = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${
@@ -299,7 +299,7 @@ export const createUserName = async (decryptedData: LocalStorageData) => {
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: createdClient.email,
       subjectAdmin: `New InstaPay Client Registration`,
       subjectClient: `${

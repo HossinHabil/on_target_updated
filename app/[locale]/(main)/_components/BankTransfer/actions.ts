@@ -38,7 +38,7 @@ export const updateBankTransferDeposit = async (
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -112,7 +112,7 @@ export const createBankTransferDeposit = async (
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: newClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -183,7 +183,7 @@ export const updateBankTransferWithdrawal = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: updatedClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
@@ -261,7 +261,7 @@ export const createBankTransferWithdrawal = async ({
 
     await sendEmail({
       from: "mail@ontarget.exchange",
-      toAdmin: "on-target-eg@outlook.com",
+      toAdmin: "ontargetnoti@outlook.com",
       toClient: newClient.email,
       subjectAdmin: `New Vodafone Client Registration`,
       subjectClient: `${
