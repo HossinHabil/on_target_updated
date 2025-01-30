@@ -9,7 +9,6 @@ export default async function Dashboard() {
       <h2 className="font-semibold text-3xl">
         Hello {session && session.user?.name} 👋
       </h2>
-
       <ClientBar />
     </div>
   );
